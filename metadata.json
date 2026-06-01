@@ -1,0 +1,6 @@
+{
+  "name": "DocSplit AI",
+  "description": "Enterprise-scale document splitting application that allows users to upload PDF and Word documents, preview page thumbnails, select custom ranges or groupings, and split them using advanced layouts or AI-powered smart document boundary extraction.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
