@@ -108,9 +108,27 @@ export default function UploadArea({ onDocumentLoaded, isLoading, setIsLoading }
               }),
             });
 
-            const result = await response.json();
-            if (!response.ok || !result.success) {
-              throw new Error(result.error || "Word to PDF converter encountered an issue.");
+            let result: any = null;
+            const contentType = response.headers.get("content-type") || "";
+            if (contentType.includes("application/json")) {
+              try {
+                result = await response.json();
+              } catch (parseErr) {
+                console.warn("JSON parsing of response failed:", parseErr);
+              }
+            }
+
+            if (!response.ok) {
+              if (response.status === 413) {
+                throw new Error("This document is too large for the conversion server's memory limits. Please convert your Word document to a PDF locally and upload the PDF directly.");
+              } else if (response.status === 502 || response.status === 503 || response.status === 504) {
+                throw new Error(`The document conversion gateway is temporarily busy or timed out (status ${response.status}). To process this file immediately, please export it as a PDF locally first and upload the PDF here.`);
+              }
+              throw new Error(result?.error || `Server returned HTTP status ${response.status}. We suggest saving this file as a PDF locally and uploading it.`);
+            }
+
+            if (!result || !result.success) {
+              throw new Error(result?.error || "The Word-to-PDF conversion was unsuccessful. We recommend exporting the document as a PDF locally first and uploading the PDF.");
             }
 
             // Successfully received PDF base64 converted inside the node core backend!

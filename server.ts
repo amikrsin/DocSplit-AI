@@ -267,6 +267,7 @@ app.post("/api/convert-docx", async (req, res) => {
       execSync(`libreoffice "-env:UserInstallation=file://${userProfDir}" --headless --convert-to pdf --outdir /tmp "${tempInputPath}"`, {
         encoding: "utf8",
         stdio: "pipe",
+        timeout: 20000,
       });
     } catch (execErr: any) {
       console.error("LibreOffice execute error, trying soffice fallback command...", execErr.message);
@@ -274,6 +275,7 @@ app.post("/api/convert-docx", async (req, res) => {
       execSync(`soffice "-env:UserInstallation=file://${userProfDir}" --headless --convert-to pdf --outdir /tmp "${tempInputPath}"`, {
         encoding: "utf8",
         stdio: "pipe",
+        timeout: 20000,
       });
     }
 
